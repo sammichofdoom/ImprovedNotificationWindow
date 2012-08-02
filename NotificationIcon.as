@@ -1,4 +1,4 @@
-/**
+﻿/**
  * represents a single notification badge
  * @author Sammiches
  */
@@ -18,7 +18,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 	{
 		super.configUI();
 		
-		onPressAux = handleMousePress;
+		this["onPressAux"] = handleMousePress;
 		
 		label = "";
 	}
@@ -42,23 +42,22 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 	}
 	
 	//replaced original to handle potential right clicks.
-	private function handleMousePress(mouseIdx:Number, keyboardOrMouse:Number, buttonIdx:Number)):Void 
+	private function handleMousePress(mouseIdx:Number, keyboardOrMouse:Number, buttonIdx:Number):Void 
 	{
 		if (_disabled) { return; }
 		if (!_disableFocus) { Selection.setFocus(this); }
 		setState("down"); // Focus changes in the setState will override those in the changeFocus (above)
 		
-		dispatchEvent( 
-		{ 	
+		dispatchEvent( { 	
 			type:"press", 
-			mouseIndex:mouseIndex, 
-			button:button, 
-			buttonIdx: ((buttonIdx == undefined) ? Mouse["LEFT"] : buttonIdx
+			mouseIndex:mouseIdx, 
+			button:keyboardOrMouse, 
+			buttonIdx: ((buttonIdx == undefined) ? Mouse["LEFT"] : buttonIdx)
 		});		
 		
 		if (autoRepeat) 
 		{
-			buttonRepeatInterval = setInterval(this, "beginButtonRepeat", buttonRepeatDelay, mouseIndex, button);
+			buttonRepeatInterval = setInterval(this, "beginButtonRepeat", buttonRepeatDelay, mouseIdx, keyboardOrMouse);
 		}
 	}
 }
