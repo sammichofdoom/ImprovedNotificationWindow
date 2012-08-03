@@ -1,7 +1,8 @@
-﻿/**
+/**
  * meant to replace the AnimaWheelLink window.
  * @author Sammiches
  */
+import com.Components.WindowComponent;
 import com.GameInterface.Claim;
 import com.GameInterface.DistributedValue;
 import com.GameInterface.Game.Character;
@@ -10,10 +11,12 @@ import com.GameInterface.Lore;
 import com.GameInterface.Tooltip.*;
 import com.GameInterface.Utils;
 import com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon;
+import com.Utils.Archive;
 import com.Utils.ID32;
 import com.Utils.LDBFormat;
 import gfx.core.UIComponent;
 import gfx.events.EventTypes;
+import gfx.utils.Delegate;
 
 class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow extends UIComponent
 {
@@ -65,10 +68,15 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private var m_nBrokenItems;
 	private var m_nBreakingItems;
 	
+	private var m_savedVariables:Object;
+	
+	private var settings:WindowComponent;
+	private var showMe:MovieClip;
+	
 	public function ImprovedNotificationWindow() 
 	{
 		super();	
-		////trace("[ImprovedNotificationWindow][INFO]: Constructor");
+		//trace("[ImprovedNotificationWindow][INFO]: Constructor");
 		
 		m_usedNotifications = new Array();
 		m_unusedNotifications = new Array();
@@ -81,6 +89,8 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	{
 		super.onLoad();
 		//trace("[ImprovedNotificationWindow][INFO]: onLoad");
+		
+		settings._visible = false;
 		
 		m_dv_wheelMonitor = DistributedValue.Create(S_ANIMA_WINDOW);
 		m_dv_wheelMonitor.SignalChanged.Connect(signalHandlerWheel, this);
@@ -118,6 +128,16 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	{
 		super.configUI();
 		//trace("[ImprovedNotificationWindow][INFO]: configUI");
+		
+		settings.SetTitle("Settings");
+		settings["m_CloseButton"].addEventListener("click", this, "ToggleSettings");
+	
+		showMe.onPress = Delegate.create(this, ToggleSettings);
+	}
+	
+	public function ToggleSettings():Void
+	{
+		settings._visible = !settings._visible;
 	}
 	
 	private function draw():Void
@@ -250,6 +270,8 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private function ShowNotificationIcon(type:Number, count:String, id:Number, header:String, body:String):Void
 	{
 		//trace("[ImprovedNotificationWindow][INFO]: ShowNotificationIcon");
+		
+		if (!IsTypeActive(type)) { return; }
 		
 		var icon:NotificationIcon = GetNotificationIcon(type);
 		if (icon != undefined)
@@ -610,6 +632,62 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		if (stat == _global.Enums.Stat.e_Durability || stat == _global.Enums.Stat.e_MaxDurability)
 		{
 			UpdateDurability();
+		}
+	}
+	
+	/****************************************************************************************
+	 * Saved Variables																		*
+	****************************************************************************************/
+	
+	private function OnModuleActivated(config:Archive):Void
+	{
+		m_savedVariables = config.FindEntry("SavedVariables");
+		if (m_savedVariables == undefined)
+		{
+			m_savedVariables = new Object();
+			m_savedVariables.options = new Array();
+			m_savedVariables.options[eAnima] 		= true;
+			m_savedVariables.options[eSkill] 		= true;
+			m_savedVariables.options[eLore] 		= true;
+			m_savedVariables.options[eAchievement] 	= true;
+			m_savedVariables.options[eBreaking] 	= true;
+			m_savedVariables.options[eBroken] 		= true;
+			m_savedVariables.options[eTutorial] 	= true;
+			m_savedVariables.options[ePetition] 	= true;
+			m_savedVariables.options[eCash] 		= true;
+			m_savedVariables.options[eMajorAnima] 	= true;
+			m_savedVariables.options[eMinorAnima] 	= true;
+			m_savedVariables.options[eSoloToken] 	= true;
+			m_savedVariables.options[eEgypToken] 	= true;
+			m_savedVariables.options[eTranToken] 	= true;
+			m_savedVariables.options[eHeroicToken] 	= true;
+		}
+	}
+	
+	private function OnModuleDeactivated():Archive
+	{
+		var retVal:Archive = new Archive;
+		retVal.AddEntry("SavedVariables", m_savedVariables);
+		return	retVal;
+	}
+	
+	private function IsTypeActive(type:Number):Boolean
+	{
+		if (m_savedVariables != undefined)
+		{
+			return m_savedVariables.options[type];
+		}
+		
+		return true;
+	}
+	
+	public function SettingChanged(optionIdx:Number, value:Boolean):Void
+	{
+		m_savedVariables.options[optionIdx] = value;
+		
+		if (!value)
+		{
+			HideNotificationIcon(optionIdx);
 		}
 	}
 }
