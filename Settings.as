@@ -42,9 +42,6 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 	public function onLoad():Void
 	{
 		super.onLoad();
-		trace(_root);
-		trace(_parent);
-		trace(_parent._parent);
 	}
 	
 	public function configUI():Void
