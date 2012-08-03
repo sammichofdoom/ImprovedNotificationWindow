@@ -24,11 +24,11 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	//statics
 	private static var S_ANIMA_WINDOW:String 		= "anima_wheel_gui";
 	private static var S_SKILL_HIVE:String 			= "skillhive_window"
-	private static var S_CHARACTER_WINDOW:String 	= "character_points_gui";
-	private static var S_CHARACTER_SHEET:String 	= "character_sheet";
-	private static var S_ACHIEVEMENT_WINDOW:String  = "achievement_lore_window";
-	private static var S_PETITION_WINDOW:String 	= "petition_browser";
-	private static var S_PETITION_UPDATE:String 	= "HasUpdatedPetition";
+	private static var S_CHARACTER_WINDOW:String 		= "character_points_gui";
+	private static var S_CHARACTER_SHEET:String 		= "character_sheet";
+	private static var S_ACHIEVEMENT_WINDOW:String 	 	= "achievement_lore_window";
+	private static var S_PETITION_WINDOW:String 		= "petition_browser";
+	private static var S_PETITION_UPDATE:String 		= "HasUpdatedPetition";
 	private static var S_CLAIM_WINDOW:String 		= "claim_window";
 	private static var S_TOKEN_WINDOW:String 		= "wallet_window";
 	
@@ -37,19 +37,19 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	public static var eAnima:Number 		= 1;
 	public static var eSkill:Number			= 2;
 	public static var eLore:Number			= 3;
-	public static var eAchievement:Number	= 4;
+	public static var eAchievement:Number		= 4;
 	public static var eBreaking:Number		= 5;
 	public static var eBroken:Number		= 6;
 	public static var eTutorial:Number		= 7;
 	public static var ePetition:Number		= 8;
 	public static var eClaim:Number			= 9;	
 	public static var eCash:Number			= 10;
-	public static var eMajorAnima:Number	= 11;
-	public static var eMinorAnima:Number 	= 12;
+	public static var eMajorAnima:Number		= 11;
+	public static var eMinorAnima:Number 		= 12;
 	public static var eSoloToken:Number		= 13;
 	public static var eEgypToken:Number		= 14;
 	public static var eTranToken:Number		= 15;
-	public static var eHeroicToken:Number	= 16;
+	public static var eHeroicToken:Number		= 16;
 	
 	public var m_dv_wheelMonitor:DistributedValue;
 	public var m_dv_skillMonitor:DistributedValue;
@@ -664,21 +664,22 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		{
 			//trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated -- Creating New Object");
 			m_options = new Array();
+			m_options[eInvalid]		= false;
 			m_options[eAnima] 		= true;
 			m_options[eSkill] 		= true;
 			m_options[eLore] 		= true;
-			m_options[eAchievement] = true;
-			m_options[eBreaking] 	= true;
+			m_options[eAchievement] 	= true;
+			m_options[eBreaking] 		= true;
 			m_options[eBroken] 		= true;
-			m_options[eTutorial] 	= true;
-			m_options[ePetition] 	= true;
+			m_options[eTutorial] 		= true;
+			m_options[ePetition] 		= true;
 			m_options[eCash] 		= true;
-			m_options[eMajorAnima] 	= true;
-			m_options[eMinorAnima] 	= true;
-			m_options[eSoloToken] 	= true;
-			m_options[eEgypToken] 	= true;
-			m_options[eTranToken] 	= true;
-			m_options[eHeroicToken] = true;
+			m_options[eMajorAnima] 		= true;
+			m_options[eMinorAnima] 		= true;
+			m_options[eSoloToken] 		= true;
+			m_options[eEgypToken] 		= true;
+			m_options[eTranToken] 		= true;
+			m_options[eHeroicToken] 	= true;
 		}
 		
 		Settings(settings.m_Content).Redraw();
