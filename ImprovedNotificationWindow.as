@@ -27,6 +27,8 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private static var S_PETITION_UPDATE:String 	= "HasUpdatedPetition";
 	private static var S_CLAIM_WINDOW:String 		= "claim_window";
 	
+	private static var S_SP_CAP:Number = 1155;
+	
 	//pseudo enum corresponds to frame of background
 	public static var eInvalid:Number 		= 0;
 	public static var eAnima:Number 		= 1;
@@ -492,7 +494,9 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 			//potentially add more here!
 		}
 		
-		if (((total > 0) && (oldValue < newValue)) && (type != eInvalid))
+		var skillCap:Boolean = (type == eSkill && total == S_SP_CAP);
+		
+		if (!skillCap && ((total > 0) && (oldValue < newValue)) && (type != eInvalid))
 		{
 			ShowNotificationIcon(type, String(total), -1, title, body);
 		}
