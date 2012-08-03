@@ -52,6 +52,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 		{
 			var rdio:CheckBox = CheckBox(m_CheckBoxs[i]);
 			rdio.addEventListener(EventTypes.CLICK, this, "CheckBoxClicked");
+			rdio.selected = ImprovedNotificationWindow(_parent._parent).IsTypeActive(i + 1);
 			rdio["optionIndex"] = i + 1;
 		}
 		
@@ -78,5 +79,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 		var rdio:CheckBox = CheckBox(e.target);
 		var optionIndex:Number = rdio["optionIndex"];
 		ImprovedNotificationWindow(_parent._parent).SettingChanged(optionIndex, rdio.selected);
+		
+		Selection.setFocus(null);
 	}
 }

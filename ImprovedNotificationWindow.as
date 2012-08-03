@@ -29,6 +29,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private static var S_PETITION_WINDOW:String 	= "petition_browser";
 	private static var S_PETITION_UPDATE:String 	= "HasUpdatedPetition";
 	private static var S_CLAIM_WINDOW:String 		= "claim_window";
+	private static var S_TOKEN_WINDOW:String 		= "wallet_window";
 	
 	private static var S_SP_CAP:Number = 1155;
 	
@@ -90,6 +91,8 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		super.onLoad();
 		//trace("[ImprovedNotificationWindow][INFO]: onLoad");
 		
+		_OnModuleActivated(DistributedValue.GetDValue("ImprovedNotificationWindow"));
+		
 		settings._visible = false;
 		
 		m_dv_wheelMonitor = DistributedValue.Create(S_ANIMA_WINDOW);
@@ -118,10 +121,17 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		signalHandlerClaimUpdated();
 		signalHandlerPetitionUpdate();
 		
-		/*for (var i:Number = eAnima; i < 10; i++)
+		/*for (var i:Number = eAnima; i < 16; i++)
 		{
-			ShowNotificationIcon(i, String(i), -1, "TESTING", "testbody");
+			ShowNotificationIcon(i, String(Math.random()), -1, "TESTING", "testbody");
 		}*/
+	}
+	
+	public function OnUnload():Void
+	{
+		trace("[ImprovedNotificationWindow][INFO]: OnUnload");
+		var endVal:Archive = _OnModuleDeactivated();
+		DistributedValue.SetDValue("ImprovedNotificationWindow", endVal);
 	}
 	
 	public function configUI():Void
@@ -378,6 +388,15 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 			case eClaim:
 				DistributedValue.SetDValue(S_CLAIM_WINDOW, true);
 				break
+			case eCash:
+			case eMajorAnima:
+			case eMinorAnima:
+			case eSoloToken:
+			case eEgypToken:
+			case eTranToken:
+			case eHeroicToken:
+				DistributedValue.SetDValue(S_TOKEN_WINDOW, !DistributedValue.GetDValue(S_TOKEN_WINDOW));
+				break;
 			case eInvalid:
 			default:
 				//trace("[ImprovedNotificationWindow][Error]: Clicked notification did not have a valid type");
@@ -639,11 +658,14 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	 * Saved Variables																		*
 	****************************************************************************************/
 	
-	private function OnModuleActivated(config:Archive):Void
+	private function _OnModuleActivated(config:Archive):Void
 	{
+		if (config == undefined) return;
+		trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated: " + config);
 		m_savedVariables = config.FindEntry("SavedVariables");
 		if (m_savedVariables == undefined)
 		{
+			trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated -- Creating New Object");
 			m_savedVariables = new Object();
 			m_savedVariables.options = new Array();
 			m_savedVariables.options[eAnima] 		= true;
@@ -664,14 +686,15 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		}
 	}
 	
-	private function OnModuleDeactivated():Archive
+	private function _OnModuleDeactivated():Archive
 	{
+		trace("[ImprovedNotificationWindow][INFO]: OnModuleDeactivated");
 		var retVal:Archive = new Archive;
 		retVal.AddEntry("SavedVariables", m_savedVariables);
 		return	retVal;
 	}
 	
-	private function IsTypeActive(type:Number):Boolean
+	public function IsTypeActive(type:Number):Boolean
 	{
 		if (m_savedVariables != undefined)
 		{
