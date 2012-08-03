@@ -33,7 +33,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 	{
 		super();
 		
-		m_CheckBoxs = new Array(eAnima, eSkill, eLore, eAchievement,
+		m_CheckBoxs = new Array(undefined, eAnima, eSkill, eLore, eAchievement,
 			eBreaking, eBroken, eTutorial, ePetition, eClaim, eCash,
 			eMajorAnima, eMinorAnima, eSoloToken, eEgypToken, eTranToken,
 			eHeroicToken);
@@ -73,15 +73,17 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 		for (var i:Number = 0; i < m_CheckBoxs.length; i++)
 		{
 			var rdio:CheckBox = CheckBox(m_CheckBoxs[i]);
-			
-			if (rdio.hasEventListener(EventTypes.CLICK))
+			if (rdio != undefined)
 			{
-				rdio.removeEventListener(EventTypes.CLICK);
+				if (rdio.hasEventListener(EventTypes.CLICK))
+				{
+					rdio.removeEventListener(EventTypes.CLICK);
+				}
+				
+				rdio.addEventListener(EventTypes.CLICK, this, "CheckBoxClicked");
+				rdio.selected = ImprovedNotificationWindow(_parent._parent).IsTypeActive(i);
+				rdio["optionIndex"] = i;
 			}
-			
-			rdio.addEventListener(EventTypes.CLICK, this, "CheckBoxClicked");
-			rdio.selected = ImprovedNotificationWindow(_parent._parent).IsTypeActive(i + 1);
-			rdio["optionIndex"] = i + 1;
 		}
 	}
 	
