@@ -11,6 +11,7 @@ import com.GameInterface.Lore;
 import com.GameInterface.Tooltip.*;
 import com.GameInterface.Utils;
 import com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon;
+import com.sammichofdoom.ImprovedNotificationWindow.Settings;
 import com.Utils.Archive;
 import com.Utils.ID32;
 import com.Utils.LDBFormat;
@@ -129,7 +130,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	public function OnUnload():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: OnUnload");
+		//trace("[ImprovedNotificationWindow][INFO]: OnUnload");
 		var endVal:Archive = _OnModuleDeactivated();
 		DistributedValue.SetDValue("ImprovedNotificationWindow", endVal);
 	}
@@ -683,13 +684,18 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 			m_options[eTranToken] 	= true;
 			m_options[eHeroicToken] = true;
 		}
+		
+		Settings(settings.m_Content).Redraw();
 	}
 	
 	private function _OnModuleDeactivated():Archive
 	{
-		trace("[ImprovedNotificationWindow][INFO]: OnModuleDeactivated");
+		//trace("[ImprovedNotificationWindow][INFO]: OnModuleDeactivated");
 		var retVal:Archive = new Archive;
-		retVal.AddEntry("SavedVariables", m_options);
+		for (var i:Number = 0; i < m_options.length; i++)
+		{
+			retVal.AddEntry("SavedVariables", m_options[i]);
+		}
 		return	retVal;
 	}
 	

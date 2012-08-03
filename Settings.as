@@ -48,14 +48,6 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 	{
 		super.configUI();
 		
-		for (var i:Number = 0; i < m_CheckBoxs.length; i++)
-		{
-			var rdio:CheckBox = CheckBox(m_CheckBoxs[i]);
-			rdio.addEventListener(EventTypes.CLICK, this, "CheckBoxClicked");
-			rdio.selected = ImprovedNotificationWindow(_parent._parent).IsTypeActive(i + 1);
-			rdio["optionIndex"] = i + 1;
-		}
-		
 		eAnima.label = LDBFormat.LDBGetText("GenericGUI", "AnimaWheelLink_AnimaPointsHeader");
 		eSkill.label = LDBFormat.LDBGetText("GenericGUI", "AnimaWheelLink_SkillPointsHeader");
 		eLore.label = LDBFormat.LDBGetText("GenericGUI", "Lore_AllCaps");
@@ -72,6 +64,25 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 		eEgypToken.label = LDBFormat.LDBGetText("Tokens", "Token" + _global.Enums.Token.e_Egypt_Token);
 		eTranToken.label = LDBFormat.LDBGetText("Tokens", "Token" + _global.Enums.Token.e_Transylvania_Token);
 		eHeroicToken.label = LDBFormat.LDBGetText("Tokens", "Token" + _global.Enums.Token.e_Heroic_Token);
+		
+		Redraw()
+	}
+	
+	public function Redraw():Void
+	{
+		for (var i:Number = 0; i < m_CheckBoxs.length; i++)
+		{
+			var rdio:CheckBox = CheckBox(m_CheckBoxs[i]);
+			
+			if (rdio.hasEventListener(EventTypes.CLICK))
+			{
+				rdio.removeEventListener(EventTypes.CLICK);
+			}
+			
+			rdio.addEventListener(EventTypes.CLICK, this, "CheckBoxClicked");
+			rdio.selected = ImprovedNotificationWindow(_parent._parent).IsTypeActive(i + 1);
+			rdio["optionIndex"] = i + 1;
+		}
 	}
 	
 	private function CheckBoxClicked(e:Object):Void
