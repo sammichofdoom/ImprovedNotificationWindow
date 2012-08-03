@@ -7,11 +7,13 @@ import com.GameInterface.DistributedValue;
 import com.GameInterface.Game.Character;
 import com.GameInterface.Inventory;
 import com.GameInterface.Lore;
+import com.GameInterface.Tooltip.*;
 import com.GameInterface.Utils;
 import com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon;
 import com.Utils.ID32;
+import com.Utils.LDBFormat;
 import gfx.core.UIComponent;
-import mx.data.encoders.Num;
+import gfx.events.EventTypes;
 
 class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow extends UIComponent
 {
@@ -120,6 +122,53 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		}
 	}
 	
+	private function ShowTooltip(e:Object):Void
+	{
+		var icon:NotificationIcon = NotificationIcon(e.target);
+		
+		icon["tooltip"] = TooltipManager.GetInstance().ShowTooltip( icon, 
+			TooltipInterface.e_OrientationVertical, 
+			0 /*instant*/, 
+			icon["tooltipData"] );
+	}
+	
+	private function HideTooltip(e:Object):Void
+	{
+		var icon:NotificationIcon = NotificationIcon(e.target);
+		if (icon["tooltip"] != undefined)
+		{
+			icon["tooltip"].Close();
+			icon["tooltip"] = undefined;
+		}
+	}
+	
+	private function RegisterTooltip(target:NotificationIcon, headline:String, bodyText:String)
+	{
+		var htmlText:String = "<b>" + Utils.CreateHTMLString( headline, { face:"_StandardFont", color: "#FFFFFF", size: 14 } )+"</b>";
+		htmlText += "<br/>" + Utils.CreateHTMLString( bodyText,{ face:"_StandardFont", color: "#FFFFFF", size: 12 }  );
+		
+		if (target.hasEventListener(EventTypes.ROLL_OUT))
+		{
+			target.removeEventListener(EventTypes.ROLL_OUT);
+		}
+		
+		if (target.hasEventListener(EventTypes.ROLL_OVER))
+		{
+			target.removeEventListener(EventTypes.ROLL_OVER);
+		}
+		
+		target.addEventListener(EventTypes.ROLL_OVER, this, "ShowTooltip");
+		target.addEventListener(EventTypes.ROLL_OUT, this, "HideTooltip");
+		
+		var tooltipData:TooltipData = new TooltipData();
+		tooltipData.m_Descriptions.push(htmlText);
+		tooltipData.m_Padding = 4;
+		tooltipData.m_MaxWidth = 210;
+		
+		target["tooltipData"] = tooltipData;
+	}
+
+	
 	//copy pasta from animawheellink.as
 	private function UpdateDurability():Void
 	{
@@ -153,7 +202,9 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		
 		if (m_nBreakingItems > 0)
 		{
-			ShowNotificationIcon(eBreaking, String(m_nBreakingItems), -1);
+			var title:String = LDBFormat.LDBGetText("GenericGUI", "Notifications_BreakingItemsHeader");
+			var body:String = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "Notifications_BreakingItemsBody"), m_nBreakingItems);
+			ShowNotificationIcon(eBreaking, String(m_nBreakingItems), -1, headline, bodyText);
 		}
 		else if (m_nBreakingItems == 0)
 		{
@@ -162,7 +213,9 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		
 		if (m_nBrokenItems > 0)
 		{
-			ShowNotificationIcon(eBroken, String(m_nBrokenItems), -1);
+			var title:String = LDBFormat.LDBGetText("GenericGUI", "Notifications_BrokenItemsHeader");
+			var body:String = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "Notifications_BrokenItemsBody"), m_nBrokenItems);
+			ShowNotificationIcon(eBroken, String(m_nBrokenItems), -1, title, body);
 		}
 		else if (m_nBrokenItems == 0)
 		{
@@ -182,7 +235,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		return retVal;
 	}
 	
-	private function ShowNotificationIcon(type:Number, count:String, id:Number):Void
+	private function ShowNotificationIcon(type:Number, count:String, id:Number, header:String, body:String):Void
 	{
 		trace("[ImprovedNotificationWindow][INFO]: ShowNotificationIcon");
 		
@@ -210,6 +263,8 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 			m_usedNotifications.push(icon);
 			invalidate();
 		}
+		
+		RegisterTooltip(icon, header, body);
 	}
 	
 	private function HideNotificationIcon(type:Number):Void 
@@ -222,6 +277,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 			if (icon.type == type)
 			{
 				icon._visible = false;
+				
+				if (icon["tooltip"] != undefined)
+				{
+					icon["tooltip"].Close();
+					icon["tooltip"] = undefined;
+				}
+				
 				Selection.setFocus(null);
 				m_unusedNotifications.push(icon);
 				m_usedNotifications.splice(i, 1);
@@ -329,7 +391,9 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		
 		if (visible)
 		{
-			ShowNotificationIcon(ePetition, "");
+			var title:String = LDBFormat.LDBGetText("GenericGUI", "Notifications_PetitionHeader");
+			var body:String = LDBFormat.LDBGetText("GenericGUI", "Notifications_PetitionBody")
+			ShowNotificationIcon(ePetition, "", -1, title, body);
 		}
 		else
 		{
@@ -352,7 +416,10 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		
 		if (claimCount && canRecieveClaims)
 		{
-			ShowNotificationIcon(eClaim, String(claimCount), -1);
+			var title:String = LDBFormat.LDBGetText("GenericGUI", "Notifications_ClaimHeader");
+			var body:String = LDBFormat.Printf( LDBFormat.LDBGetText("GenericGUI", "Notifications_ClaimBody"), claimCount);
+			
+			ShowNotificationIcon(eClaim, String(claimCount), -1, title, body);
 		}
 		else
 		{
@@ -400,13 +467,31 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private function signalHandlerCharacterTokenChanged(id:Number, newValue:Number, oldValue:Number):Void
 	{
 		trace("[ImprovedNotificationWindow][INFO]: signalHandlerCharacterTokenChanged");
-		var type:Number = ((id == _global.Enums.Token.e_Anima_Point) ? eAnima : (id == _global.Enums.Token.e_Skill_Point) ? eSkill : 0);
-		var total:Number = ((m_Character != undefined) ? m_Character.GetTokens(id) : 0);
-		var show:Boolean = ((total > 0) && (oldValue < newValue));
-		
-		if (show)
+		var type:Number = eInvalid;
+		var total:Number = -1;
+		var title:String = "";
+		var body:String = "";
+		switch(id)
 		{
-			ShowNotificationIcon(type, String(total), -1);
+		case _global.Enums.Token.e_Anima_Point:
+			type = eAnima;
+			total = ((m_Character != undefined) ? m_Character.GetTokens(id) : 0);
+			title = LDBFormat.LDBGetText("GenericGUI", "AnimaWheelLink_AnimaPointsHeader");
+			body = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "AnimaWheelLink_AnimaPointsBody"), total);
+			break;
+		case _global.Enums.Token.e_Skill_Point:
+			type = eSkill;
+			total = ((m_Character != undefined) ? m_Character.GetTokens(id) : 0);
+			title = LDBFormat.LDBGetText("GenericGUI", "AnimaWheelLink_SkillPointsHeader");
+			body = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "AnimaWheelLink_SkillPointsBody"), total);  
+			break;
+		default:
+			//potentially add more here!
+		}
+		
+		if (((total > 0) && (oldValue < newValue)) && (type != eInvalid))
+		{
+			ShowNotificationIcon(type, String(total), -1, title, body);
 		}
 		else
 		{
@@ -421,20 +506,34 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		
 		var dataType:Number = Lore.GetTagCategory(tagId);
 		
+		var loreName:String = Lore.GetTagName(tagId);
+		if (loreName == "") /// lots of lore and acievement items has no name
+		{
+			loreName = Lore.GetTagName(Lore.GetTagParent(tagId));
+		}
+		
+		var title:String = "";
+		var body:String = "";
+		var type:Number = eInvalid;
+		
 		switch(dataType)
 		{
 		case _global.Enums.LoreNodeType.e_Achievement:
 			{
 				if (!Lore.ShouldShowGetAnimation(tagId)) { return; }
 				
-				ShowNotificationIcon(eAchievement, "", tagId);
+				title = LDBFormat.LDBGetText("GenericGUI", "Achievements_AllCaps");
+				body = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "Achievements_Tooltip"), loreName);
+				type = eAchievement;
 			}
 			break;
 		case _global.Enums.LoreNodeType.e_Lore:
 			{
 				if (!Lore.ShouldShowGetAnimation(tagId)) { return; }
 				
-				ShowNotificationIcon(eLore, "", tagId);
+				title = LDBFormat.LDBGetText("GenericGUI", "Lore_AllCaps");
+				body = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "LoreTooltip"), loreName);
+				type = eLore;
 			}
 			break;
 		case _global.Enums.LoreNodeType.e_Tutorial:
@@ -445,13 +544,17 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 					return;
 				}
 				
-				ShowNotificationIcon(eTutorial, "", tagId);
+				title = LDBFormat.LDBGetText("GenericGUI", "Notifications_TutorialHeader");
+				body = LDBFormat.LDBGetText("GenericGUI", "Notifications_TutorialBody");
+				type = eTutorial;
 			}
 			break;
 		case _global.Enums.LoreNodeType.e_Tutorial:
 		default:
 			//we do nothing
 		}
+		
+		ShowNotificationIcon(eAchievement, "", tagId, title, body);
 	}
 	
 	private function signalHandlerItemAdded(inventoryId:ID32, itemPos:Number):Void
