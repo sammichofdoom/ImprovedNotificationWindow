@@ -22,6 +22,15 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 		
 		//compiler doesn't like this.onPressAux D:
 		this["onPressAux"] = handleMousePress;
+		
+		textField["textAutoSize"] = "shrink";
+	}
+	
+	private function updateAfterStateChange():Void
+	{
+		super.updateAfterStateChange();
+		
+		textField["textAutoSize"] = "shrink";
 	}
 	
 	public function set type(type:Number):Void 
