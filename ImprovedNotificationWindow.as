@@ -69,7 +69,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private var m_nBrokenItems;
 	private var m_nBreakingItems;
 	
-	private var m_savedVariables:Object;
+	private var m_options:Array;
 	
 	private var settings:WindowComponent;
 	private var showMe:MovieClip;
@@ -662,27 +662,26 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	{
 		if (config == undefined) return;
 		trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated: " + config);
-		m_savedVariables = config.FindEntry("SavedVariables");
-		if (m_savedVariables == undefined)
+		m_options = config.FindEntryArray("SavedVariables");
+		if (m_options == undefined)
 		{
 			trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated -- Creating New Object");
-			m_savedVariables = new Object();
-			m_savedVariables.options = new Array();
-			m_savedVariables.options[eAnima] 		= true;
-			m_savedVariables.options[eSkill] 		= true;
-			m_savedVariables.options[eLore] 		= true;
-			m_savedVariables.options[eAchievement] 	= true;
-			m_savedVariables.options[eBreaking] 	= true;
-			m_savedVariables.options[eBroken] 		= true;
-			m_savedVariables.options[eTutorial] 	= true;
-			m_savedVariables.options[ePetition] 	= true;
-			m_savedVariables.options[eCash] 		= true;
-			m_savedVariables.options[eMajorAnima] 	= true;
-			m_savedVariables.options[eMinorAnima] 	= true;
-			m_savedVariables.options[eSoloToken] 	= true;
-			m_savedVariables.options[eEgypToken] 	= true;
-			m_savedVariables.options[eTranToken] 	= true;
-			m_savedVariables.options[eHeroicToken] 	= true;
+			m_options = new Array();
+			m_options[eAnima] 		= true;
+			m_options[eSkill] 		= true;
+			m_options[eLore] 		= true;
+			m_options[eAchievement] = true;
+			m_options[eBreaking] 	= true;
+			m_options[eBroken] 		= true;
+			m_options[eTutorial] 	= true;
+			m_options[ePetition] 	= true;
+			m_options[eCash] 		= true;
+			m_options[eMajorAnima] 	= true;
+			m_options[eMinorAnima] 	= true;
+			m_options[eSoloToken] 	= true;
+			m_options[eEgypToken] 	= true;
+			m_options[eTranToken] 	= true;
+			m_options[eHeroicToken] = true;
 		}
 	}
 	
@@ -690,15 +689,15 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	{
 		trace("[ImprovedNotificationWindow][INFO]: OnModuleDeactivated");
 		var retVal:Archive = new Archive;
-		retVal.AddEntry("SavedVariables", m_savedVariables);
+		retVal.AddEntry("SavedVariables", m_options);
 		return	retVal;
 	}
 	
 	public function IsTypeActive(type:Number):Boolean
 	{
-		if (m_savedVariables != undefined)
+		if (m_options != undefined)
 		{
-			return m_savedVariables.options[type];
+			return m_options[type];
 		}
 		
 		return true;
@@ -706,7 +705,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	public function SettingChanged(optionIdx:Number, value:Boolean):Void
 	{
-		m_savedVariables.options[optionIdx] = value;
+		m_options[optionIdx] = value;
 		
 		if (!value)
 		{
