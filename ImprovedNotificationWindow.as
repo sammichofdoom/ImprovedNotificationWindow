@@ -658,11 +658,11 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	private function _OnModuleActivated(config:Archive):Void
 	{
 		if (config == undefined) return;
-		trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated: " + config);
+		//trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated: " + config);
 		m_options = config.FindEntryArray("SavedVariables");
 		if (m_options == undefined)
 		{
-			trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated -- Creating New Object");
+			//trace("[ImprovedNotificationWindow][INFO]: OnModuleActivated -- Creating New Object");
 			m_options = new Array();
 			m_options[eAnima] 		= true;
 			m_options[eSkill] 		= true;
