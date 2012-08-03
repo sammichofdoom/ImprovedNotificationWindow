@@ -554,7 +554,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 			//we do nothing
 		}
 		
-		ShowNotificationIcon(eAchievement, "", tagId, title, body);
+		ShowNotificationIcon(type, "", tagId, title, body);
 	}
 	
 	private function signalHandlerItemAdded(inventoryId:ID32, itemPos:Number):Void
