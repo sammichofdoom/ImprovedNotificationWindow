@@ -59,7 +59,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	public function ImprovedNotificationWindow() 
 	{
 		super();	
-		trace("[ImprovedNotificationWindow][INFO]: Constructor");
+		////trace("[ImprovedNotificationWindow][INFO]: Constructor");
 		
 		m_usedNotifications = new Array();
 		m_unusedNotifications = new Array();
@@ -71,7 +71,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	public function onLoad():Void
 	{
 		super.onLoad();
-		trace("[ImprovedNotificationWindow][INFO]: onLoad");
+		//trace("[ImprovedNotificationWindow][INFO]: onLoad");
 		
 		m_dv_wheelMonitor = DistributedValue.Create(S_ANIMA_WINDOW);
 		m_dv_wheelMonitor.SignalChanged.Connect(signalHandlerWheel, this);
@@ -98,18 +98,23 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 		signalHandlerCharacterAlive();
 		signalHandlerClaimUpdated();
 		signalHandlerPetitionUpdate();
+		
+		/*for (var i:Number = eAnima; i < 10; i++)
+		{
+			ShowNotificationIcon(i, String(i), -1, "TESTING", "testbody");
+		}*/
 	}
 	
 	public function configUI():Void
 	{
 		super.configUI();
-		trace("[ImprovedNotificationWindow][INFO]: configUI");
+		//trace("[ImprovedNotificationWindow][INFO]: configUI");
 	}
 	
 	private function draw():Void
 	{
 		super.draw();
-		trace("[ImprovedNotificationWindow][INFO]: draw");
+		//trace("[ImprovedNotificationWindow][INFO]: draw");
 		
 		var yPos:Number = 0;
 		for (var i:Number = 0; i < m_usedNotifications.length; i++)
@@ -172,7 +177,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	//copy pasta from animawheellink.as
 	private function UpdateDurability():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: UpdateDurability");
+		//trace("[ImprovedNotificationWindow][INFO]: UpdateDurability");
 		m_nBrokenItems = 0;
 		m_nBreakingItems = 0;
 		
@@ -196,15 +201,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	function UpdateDurabilityNotifications():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: UpdateDurabilityNotifications");
-		var headline:String = "";
-		var bodyText:String = "";
-		
+		//trace("[ImprovedNotificationWindow][INFO]: UpdateDurabilityNotifications");
+
 		if (m_nBreakingItems > 0)
 		{
 			var title:String = LDBFormat.LDBGetText("GenericGUI", "Notifications_BreakingItemsHeader");
 			var body:String = LDBFormat.Printf(LDBFormat.LDBGetText("GenericGUI", "Notifications_BreakingItemsBody"), m_nBreakingItems);
-			ShowNotificationIcon(eBreaking, String(m_nBreakingItems), -1, headline, bodyText);
+			ShowNotificationIcon(eBreaking, String(m_nBreakingItems), -1, title, body);
 		}
 		else if (m_nBreakingItems == 0)
 		{
@@ -229,7 +232,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function CreateNotificationIcon():NotificationIcon
 	{
-		trace("[ImprovedNotificationWindow][INFO]: CreateNotificationIcon #" + m_usedNotifications.length);
+		//trace("[ImprovedNotificationWindow][INFO]: CreateNotificationIcon #" + m_usedNotifications.length);
 		var retVal:NotificationIcon = NotificationIcon(this.attachMovie("NotificationIcon", "NotificationIcon_" + m_usedNotifications.length, this.getNextHighestDepth()));
 		retVal._visible = false;
 		return retVal;
@@ -237,7 +240,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function ShowNotificationIcon(type:Number, count:String, id:Number, header:String, body:String):Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: ShowNotificationIcon");
+		//trace("[ImprovedNotificationWindow][INFO]: ShowNotificationIcon");
 		
 		var icon:NotificationIcon = GetNotificationIcon(type);
 		if (icon != undefined)
@@ -269,7 +272,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function HideNotificationIcon(type:Number):Void 
 	{
-		trace("[ImprovedNotificationWindow][INFO]: HideNotificationIcon");
+		//trace("[ImprovedNotificationWindow][INFO]: HideNotificationIcon");
 		for (var i:Number = 0; i < m_usedNotifications.length; i++)
 		{
 			var icon:NotificationIcon = NotificationIcon(m_usedNotifications[i]);
@@ -295,7 +298,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function GetNotificationIcon(type:Number):NotificationIcon
 	{
-		trace("[ImprovedNotificationWindow][INFO]: GetNotificationIcon");
+		//trace("[ImprovedNotificationWindow][INFO]: GetNotificationIcon");
 		for (var i:Number = 0; i < m_usedNotifications.length; i++)
 		{
 			var icon:NotificationIcon = NotificationIcon(m_usedNotifications[i]);
@@ -315,7 +318,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function NotificationPressed(e:Object):Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: NotificationPressed");
+		//trace("[ImprovedNotificationWindow][INFO]: NotificationPressed");
 		var icon:NotificationIcon = NotificationIcon(e.target);
 
 		if (e.buttonIdx == 0)
@@ -346,7 +349,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 				break
 			case eInvalid:
 			default:
-				trace("[ImprovedNotificationWindow][Error]: Clicked notification did not have a valid type");
+				//trace("[ImprovedNotificationWindow][Error]: Clicked notification did not have a valid type");
 			}
 		}
 
@@ -363,13 +366,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	****************************************************************************************/
 	private function signalHandlerWheel():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerWheel");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerWheel");
 		HideNotificationIcon(eAnima);
 	}
 	
 	private function signalHandlerSkill():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerSkill");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerSkill");
 		HideNotificationIcon(eSkill);
 	}
 	
@@ -380,13 +383,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function signalHandlerPetition():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerPetition");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerPetition");
 		HideNotificationIcon(ePetition);
 	}
 	
 	private function signalHandlerPetitionUpdate():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerPetitionUpdated");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerPetitionUpdated");
 		var visible:Boolean = DistributedValue.GetDValue(S_PETITION_UPDATE);
 		
 		if (visible)
@@ -403,13 +406,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function signalHandlerClaim():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerClaim");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerClaim");
 		HideNotificationIcon(eClaim);
 	}
 	
 	private function signalHandlerClaimUpdated():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerClaimUpdated");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerClaimUpdated");
 		var claimCount = Claim.m_Claims.length;
 		var character:Character = Character.GetClientCharacter();
 		var canRecieveClaims:Boolean = character.CanReceiveItems();
@@ -430,7 +433,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	//pretty much copy pasta from AnimaWheelLink.as
 	private function signalHandlerCharacterAlive():Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerCharacterAlive");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerCharacterAlive");
 		m_Character = Character.GetClientCharacter();
 		
 		if (m_Character != undefined)
@@ -466,7 +469,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function signalHandlerCharacterTokenChanged(id:Number, newValue:Number, oldValue:Number):Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerCharacterTokenChanged");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerCharacterTokenChanged");
 		var type:Number = eInvalid;
 		var total:Number = -1;
 		var title:String = "";
@@ -501,7 +504,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 
 	private function signalHandlerLoreAnimComplete(tagId:Number):Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerLoreAnimComplete");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerLoreAnimComplete");
 		if (tagId == undefined) { return; }
 		
 		var dataType:Number = Lore.GetTagCategory(tagId);
@@ -559,13 +562,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow ex
 	
 	private function signalHandlerItemAdded(inventoryId:ID32, itemPos:Number):Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerItemAdded");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerItemAdded");
 		UpdateDurability();
 	}
 	
 	private function signalHandlerItemChanged(inventoryId:ID32, itemPos:Number, stat:Number, newValue:Number):Void
 	{
-		trace("[ImprovedNotificationWindow][INFO]: signalHandlerItemChanged");
+		//trace("[ImprovedNotificationWindow][INFO]: signalHandlerItemChanged");
 		if (stat == _global.Enums.Stat.e_Durability || stat == _global.Enums.Stat.e_MaxDurability)
 		{
 			UpdateDurability();
