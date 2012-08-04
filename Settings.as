@@ -26,6 +26,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 	private var eEgypToken:CheckBox;
 	private var eTranToken:CheckBox;
 	private var eHeroicToken:CheckBox;
+	private var eShowBadge:CheckBox;
 	
 	private var m_CheckBoxs:Array;
 	
@@ -36,7 +37,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 		m_CheckBoxs = new Array(undefined, eAnima, eSkill, eLore, eAchievement,
 			eBreaking, eBroken, eTutorial, ePetition, eClaim, eCash,
 			eMajorAnima, eMinorAnima, eSoloToken, eEgypToken, eTranToken,
-			eHeroicToken);
+			eHeroicToken, eShowBadge);
 	}
 	
 	public function onLoad():Void
@@ -64,6 +65,7 @@ class com.sammichofdoom.ImprovedNotificationWindow.Settings extends UIComponent
 		eEgypToken.label = LDBFormat.LDBGetText("Tokens", "Token" + _global.Enums.Token.e_Egypt_Token);
 		eTranToken.label = LDBFormat.LDBGetText("Tokens", "Token" + _global.Enums.Token.e_Transylvania_Token);
 		eHeroicToken.label = LDBFormat.LDBGetText("Tokens", "Token" + _global.Enums.Token.e_Heroic_Token);
+		eShowBadge.label = "Show Badge";
 		
 		Redraw()
 	}

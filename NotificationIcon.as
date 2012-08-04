@@ -2,6 +2,7 @@
  * represents a single notification badge
  * @author Sammiches
  */
+import com.Components.Numbers;
 import com.sammichofdoom.ImprovedNotificationWindow.ImprovedNotificationWindow;
 import gfx.controls.Button;
 
@@ -11,9 +12,13 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 	private var m_type:Number;
 	private var m_tagId:Number;
 	
+	private var m_showNumbers:Boolean;
+	private var numbers:Numbers;
+	
 	public function NotificationIcon() 
 	{
 		super();
+		m_showNumbers = false;
 	}
 	
 	public function configUI():Void
@@ -24,6 +29,9 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 		this["onPressAux"] = handleMousePress;
 		
 		textField["textAutoSize"] = "shrink";
+		
+		numbers.SetMax(100000);
+		numbers._visible = m_showNumbers && (label != "");
 	}
 	
 	private function updateAfterStateChange():Void
@@ -31,6 +39,9 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 		super.updateAfterStateChange();
 		
 		textField["textAutoSize"] = "shrink";
+		
+		numbers._visible = m_showNumbers && (label != "");
+		textField._visible = !m_showNumbers;
 	}
 	
 	public function set type(type:Number):Void 
@@ -55,6 +66,24 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 		return m_tagId;
 	}
 	
+	public function set showNumbers(show:Boolean):Void
+	{
+		m_showNumbers = show;
+		
+		invalidate();
+	}
+	
+	public function get showNumbers():Boolean 
+	{
+		return m_showNumbers;
+	}
+	
+	public function SetValue(val:String):Void
+	{
+		label = val;
+		numbers.SetCharge(val);
+	}
+	
 	private function draw():Void
 	{
 		super.draw();
@@ -73,6 +102,11 @@ class com.sammichofdoom.ImprovedNotificationWindow.NotificationIcon extends Butt
 		}
 		
 		m_mc_background.gotoAndStop(m_type);
+		
+		numbers._visible = m_showNumbers && (label != "");
+		textField._visible = !m_showNumbers;
+		
+		numbers.SetCharge(label);
 	}
 	
 	
